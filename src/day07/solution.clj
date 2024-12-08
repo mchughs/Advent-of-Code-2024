@@ -4,7 +4,7 @@
    [com.walmartlabs.cond-let :refer [cond-let]]))
 
 ;; solution part 1
-
+#_:clj-kondo/ignore
 (defn- operable?
   ([[x & xs]]
    (operable? x xs))
@@ -42,6 +42,7 @@
   (let [split-index (max 0 (- (count s) n))]
     [(subs s 0 split-index) (subs s split-index)]))
 
+#_:clj-kondo/ignore
 (defn- operable?*
   ([[x & xs]]
    (operable?* x xs))
