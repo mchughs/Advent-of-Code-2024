@@ -36,3 +36,38 @@
                                  queue)))
                            (pop queue)
                            (graph current))))))))
+
+;---
+
+(defn bfs-shortest-paths
+  [graph start end]
+  (letfn [(bfs [queue visited shortest-length paths]
+            (if (empty? queue)
+              paths
+              (let [[path & rest-queue] queue
+                    current (last path)
+                    path-length (count path)]
+                (cond
+                  ;; If the current path exceeds the shortest length found, stop exploring.
+                  (and shortest-length (> path-length shortest-length))
+                  (set paths)
+
+                  ;; If we reached the end node:
+                  (= current end)
+                  (let [new-shortest-length (if shortest-length
+                                              (min shortest-length path-length)
+                                              path-length)]
+                    ;; Add the path to the results and continue BFS.
+                    (recur rest-queue visited new-shortest-length (conj paths path)))
+
+                  ;; Otherwise, explore neighbors.
+                  :else
+                  (let [new-visited (conj visited current)
+                        neighbors (filter #(not (visited %)) (get graph current []))]
+                    (recur (concat rest-queue
+                                   (map #(conj path %) neighbors))
+                           new-visited
+                           shortest-length
+                           paths))))))]
+    ;; Start BFS from the start node, with no shortest length yet and no paths found.
+    (bfs [[start]] #{} nil [])))
